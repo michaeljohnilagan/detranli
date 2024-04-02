@@ -1,0 +1,10 @@
+Package: carelessnpus
+Version: 0.1
+Date: 2024-04-01
+Title: Careless responding detection, nonparametric and unsupervised
+Description: Detects full (i.e. all items) content-nonresponsivity in Likert-type data, using the nonparametric unsupervised algorithm in Ilagan & Falk (2023) <doi:10.3758/s13428-023-02246-7>. The algorithm has been extended to accommodate inventories whose items vary the number of response options.
+Author: Michael John Ilagan <michael.ilagan@mail.mcgill.ca> and Carl F. Falk <carl.falk@mcgill.ca>
+Maintainer: Michael John Ilagan <michael.ilagan@mail.mcgill.ca>
+License: BSD_3_clause + file LICENSE
+URL: https://github.com/michaeljohnilagan/carelessnpus
+RoxygenNote: 7.3.1
