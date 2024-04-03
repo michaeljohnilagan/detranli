@@ -7,7 +7,7 @@
 #' 
 #' @return The sample. Has the same class as \code{data}.
 #' 
-#' @seealso [base::sample()]
+#' @seealso \code{\link{sample}}
 #' 
 #' @export
 #' 
