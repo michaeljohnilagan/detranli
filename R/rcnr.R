@@ -8,7 +8,7 @@
 #' 
 #' @return The sample matrix.
 #' 
-#' @seealso [base::sample()]
+#' @seealso \code{\link{sample}}
 #' 
 #' @noRd
 rcnr = function(n, probs) {

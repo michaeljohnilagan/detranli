@@ -7,4 +7,5 @@ Author: Michael John Ilagan <michael.ilagan@mail.mcgill.ca> and Carl F. Falk <ca
 Maintainer: Michael John Ilagan <michael.ilagan@mail.mcgill.ca>
 License: BSD_3_clause + file LICENSE
 URL: https://github.com/michaeljohnilagan/carelessnpus
+Encoding: UTF-8
 RoxygenNote: 7.3.1

@@ -6,7 +6,7 @@
 #' 
 #' @return Vector of person-total correlations. Undefined values default to -1.
 #' 
-#' @seealso [stats::cor()]
+#' @seealso \code{\link[stats]{cor}}
 #' 
 #' @importFrom stats cor
 #' 

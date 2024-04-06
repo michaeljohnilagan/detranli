@@ -9,7 +9,7 @@
 #' 
 #' @return The sample matrix.
 #' 
-#' @seealso [stats::dbinom()], [base::sample()] , [rncr()]
+#' @seealso \code{\link[stats]{dbinom}}, \code{\link{sample}}, \code{\link{rcnrunif}}
 #' 
 #' @importFrom stats dbinom
 #' 

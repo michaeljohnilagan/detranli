@@ -7,7 +7,7 @@
 #' 
 #' @return Vector of Mahalanobis distances.
 #' 
-#' @seealso [stats::mahalanobis()]
+#' @seealso \code{\link[stats]{mahalanobis}}
 #' 
 #' @importFrom stats mahalanobis cov
 #' 

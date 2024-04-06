@@ -11,7 +11,7 @@
 #' 
 #' @return The sample matrix.
 #' 
-#' @seealso [base::sample()], [rncr()]
+#' @seealso \code{\link{sample}}, \code{\link{rcnrbinom}}
 #' 
 #' @export
 #' 
