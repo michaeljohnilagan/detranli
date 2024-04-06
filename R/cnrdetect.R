@@ -54,7 +54,7 @@ feat_funs=c(mahal, ptcossim), feat_idvals=c(0, +1)) {
 		# likert space
 		obs_likert = unname(data[i,idx_nonmiss])
 		ref = as.matrix(data[-i,idx_nonmiss,drop=FALSE])
-		if(missingmethod=="pointscalemiddle") {
+		if(missingmethod=="pointscalemidrange") {
 			ref_completed = imputepsm(ref, pointscales[idx_nonmiss])
 		} # fill in missing in anchor set
 		synth_likert = makesynth(i, data[,idx_nonmiss,drop=FALSE], 
