@@ -12,6 +12,11 @@
 #' @importFrom stats mahalanobis cov
 #' 
 #' @export
+#'
+#' @examples
+#' x = cnrexample1[1:10,]
+#' anchor = cnrexample1[-(1:10),]
+#' mahal(x, anchor) # mahalanobis distance of x wrt to anchor
 mahal = function(x, ref) {
 	# get anchor parameters
 	mu = colMeans(ref)

@@ -31,6 +31,11 @@
 #' @return Vector of p-values. Smaller p-values are less suspicious.
 #' 
 #' @export
+#'
+#' @examples
+#' set.seed(47)
+#' cnrdetect(cnrexample1, pointscales=rep(5, times=ncol(cnrexample1)), 
+#' numperms=1000) # p values
 cnrdetect = function(data, pointscales, numperms=1e3,
 feat_funs=c(mahal, ptcossim), feat_idvals=c(0, +1)) {
 	# assert

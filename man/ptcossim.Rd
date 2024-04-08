@@ -17,3 +17,8 @@ Vector of person-total cosine similarities.
 \description{
 Calculates the person-total cosine similarity with respect to some reference sample.
 }
+\examples{
+x = cnrexample1[1:10,]
+anchor = cnrexample1[-(1:10),]
+ptcossim(x, anchor) # cosine similarity of x wrt to anchor
+}

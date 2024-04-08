@@ -11,6 +11,11 @@
 #' @importFrom stats cor
 #' 
 #' @export
+#'
+#' @examples
+#' x = cnrexample1[1:10,]
+#' anchor = cnrexample1[-(1:10),]
+#' ptcor(x, anchor) # person total correlation of x wrt to anchor
 ptcor = function(x, ref) {
 	# get anchor parameters
 	mu = colMeans(ref)

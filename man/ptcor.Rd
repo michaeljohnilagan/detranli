@@ -17,6 +17,11 @@ Vector of person-total correlations. Undefined values default to -1.
 \description{
 Calculates the person-total correlation with respect to some reference sample.
 }
+\examples{
+x = cnrexample1[1:10,]
+anchor = cnrexample1[-(1:10),]
+ptcor(x, anchor) # person total correlation of x wrt to anchor
+}
 \seealso{
 \code{\link[stats]{cor}}
 }

@@ -23,3 +23,9 @@ and flag rate.
 \description{
 Given true class labels and predicted class labels, compute metrics like accuracy.
 }
+\examples{
+set.seed(47)
+y = rep(0:1, times=6) # true class labels
+yhat = rep(0:1, each=6) # predicted class labels
+metrics(y, yhat) # get confusion matrix, accuracy, etc
+}

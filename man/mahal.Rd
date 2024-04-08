@@ -17,6 +17,11 @@ Vector of Mahalanobis distances.
 \description{
 Calculates the Mahalanobis distance with respect to some reference sample.
 }
+\examples{
+x = cnrexample1[1:10,]
+anchor = cnrexample1[-(1:10),]
+mahal(x, anchor) # mahalanobis distance of x wrt to anchor
+}
 \seealso{
 \code{\link[stats]{mahalanobis}}
 }

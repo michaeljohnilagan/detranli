@@ -14,6 +14,12 @@
 #' and flag rate.
 #' 
 #' @export
+#'
+#' @examples
+#' set.seed(47)
+#' y = rep(0:1, times=6) # true class labels
+#' yhat = rep(0:1, each=6) # predicted class labels
+#' metrics(y, yhat) # get confusion matrix, accuracy, etc
 metrics = function(y, yhat) {
 	# assert
 	stopifnot(all(y%in%(0:1))|all(y%in%c("nonrandom", "random")))

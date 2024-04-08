@@ -7,6 +7,11 @@
 #' @return Vector of person-total cosine similarities.
 #' 
 #' @export
+#'
+#' @examples
+#' x = cnrexample1[1:10,]
+#' anchor = cnrexample1[-(1:10),]
+#' ptcossim(x, anchor) # cosine similarity of x wrt to anchor
 ptcossim = function(x, ref) {
 	# get anchor parameters
 	mu = colMeans(ref)

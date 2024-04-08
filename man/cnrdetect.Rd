@@ -50,3 +50,8 @@ imputed with the midrange (e.g. "3" on a scale of 1 to 5).
 When there are issues computing feature-space covariances, 
 p-value defaults to \code{NA}.
 }
+\examples{
+set.seed(47)
+cnrdetect(cnrexample1, pointscales=rep(5, times=ncol(cnrexample1)), 
+numperms=1000) # p values
+}
