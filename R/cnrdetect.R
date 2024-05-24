@@ -24,20 +24,95 @@
 #' categories there are for each item. 
 #' Length must match the number of columns in \code{data}.
 #' @param feat_funs list of nonresponsivity feature functions. Each function must 
-#' return a numeric vector.
+#' return a numeric vector. Defaults to Mahalanobis distance and person-total
+#' cosine similarity.
 #' @param feat_idvals vector of ideal values, in the same order as \code{feat_funs}.
+#' Defaults to 0 and +1 as the ideal points for Mahalanobis stiance and person-total
+#' cosine similarity.
 #' @param numperms an integer indicating how many permutations to produce per respondent.
+#' @param details If \code{FALSE} (the default), returns only p-values. If
+#' \code{TRUE}, returns additional information in a list.
 #' 
-#' @return Vector of p-values. Smaller p-values are less suspicious.
+#' @details
+#' Performs the permutation test in Ilagan and Falk (2023) for detecting survey
+#' bots (or random responders). Assuming items are exchangeable for bots (but not
+#' for diligent humans), p-values represent a test of the null hypothesis that
+#' each row is a bot. Synthetic bots are generated for each row by permuting the
+#' responses in that row. The selected nonresponsitivity indices (\code{feat_funs})
+#' for each row and its synthetic bots are computed using leave-one-out calculations
+#' with the remainder of the observed data as a reference sample; the distance of
+#' these indices from their ideal points is computed and collapsed into a
+#' one-dimensional space using a distance measure (itself resmbling Mahalanobis
+#' distance). p-values are then the lower probability of the observed
+#' response versus those of its synthetic bots in this one-dimensional space.
+#' 
+#' @return Output depends on the value of \code{details}. If \code{FALSE}, a
+#' vector of p-values. Smaller p-values are less suspicious. If not \code{TRUE},
+#' a list with the following elements:
+#' 
+#' \itemize{
+#'  \item{\code{pvals}: a vector of p-values as already described above.}
+#'  \item{\code{obs_nris}: a matrix of nonresponsivity (feature) indices for each
+#'    row of the dataset.}
+#'  \item{\code{synth_nris}: a list where each element contains a matrix of
+#'    nonresponsivity (feature) indices for the synthetic bots for each row.
+#'    The length of this list is equal to the number of rows in the dataset.
+#'    Each matrix therein has the same number of rows as permutations, and number
+#'    of columns as features.}
+#'  \item{\code{synth_likert}: a list where each element contains a matrix of
+#'    permuted Likert-type vectors representing the synthetic bots for each row.
+#'    That is, the permutations of the original row in the dataset.}
+#' }
 #' 
 #' @export
 #'
 #' @examples
 #' set.seed(47)
-#' cnrdetect(cnrexample1, pointscales=rep(5, times=ncol(cnrexample1)), 
-#' numperms=1000) # p values
+#' 
+#' # p values
+#' pvals = cnrdetect(cnrexample1, pointscales=rep(5, times=ncol(cnrexample1)), 
+#' numperms=1000) 
+#' 
+#' # If wishing to do classification with, 95% sensitivity
+#' flags = ifelse(pvals < .05, "human", "bot")
+#' 
+#' # Obtain more than just p-values
+#' permresults = cnrdetect(cnrexample1, pointscales=rep(5, times=ncol(cnrexample1)), 
+#' numperms=1000, details=TRUE)
+#' 
+#' # again, generate flags
+#' flags = ifelse(permresults$pvals < .05, "human", "bot")
+#' 
+#' # Take a look at the indices of a probable human versus its synthetic bots
+#' # Note that the ease of extracting such output is a work in progress.
+#' # Also note that in plots, the ideal point (least suspicious) is (0,+1), which
+#' # is in the direction of the upper-left corner of each plot.
+#' idx = which(flags=="human")[1]
+#' 
+#' # plot its synthetic bots
+#' plot(permresults$synth_nris[[idx]], xlab="MD", ylab="ptcossim",
+#'      xlim=c(4,6.5), ylim=c(.75,.9))
+#' 
+#' # add point for this probable human:
+#' points(x=permresults$obs_nris[idx,1], y=permresults$obs_nris[idx,2], col="blue",
+#'   pch=19)
+#' 
+#' # Now look at a probably bot versus its synthetic bots
+#' idx = which(flags=="bot")
+#' idx = idx[length(idx)]
+#' 
+#' # plot its synthetic bots
+#' plot(permresults$synth_nris[[idx]], xlab="MD", ylab="ptcossim",
+#'      xlim=c(3.5,5.5), ylim=c(.85,.95))
+#' 
+#' # add point for this probable human:
+#' points(x=permresults$obs_nris[idx,1], y=permresults$obs_nris[idx,2], col="red",
+#'   pch=19)
+#' 
+#' 
 cnrdetect = function(data, pointscales, numperms=1e3,
-feat_funs=c(mahal, ptcossim), feat_idvals=c(0, +1)) {
+feat_funs=c(mahal, ptcossim), feat_idvals=c(0, +1),
+details=FALSE) {
 	# assert
 	stopifnot(ncol(data)==length(pointscales))
 	stopifnot(length(feat_funs)==length(feat_idvals))
@@ -50,7 +125,7 @@ feat_funs=c(mahal, ptcossim), feat_idvals=c(0, +1)) {
 	# missing handling method
 	missingmethod = "pointscalemidrange"
 	# calculate hypothesis tests
-	pval = sapply(1:nrow(data), function(i) {
+	permlist = lapply(1:nrow(data), function(i) {
 		# consider only nonmissing
 		idx_nonmiss = which(!is.na(data[i,]))
 		if(length(idx_nonmiss)<=1) {
@@ -67,8 +142,27 @@ feat_funs=c(mahal, ptcossim), feat_idvals=c(0, +1)) {
 		# feature space
 		obs_nri = feats_combo(rbind(obs_likert), ref_completed)
 		synth_nri = feats_combo(synth_likert, ref_completed)
+
 		# p values
-		feat2pval(obs_nri, synth_nri, feat_idvals=feat_idvals)
+		pval <- feat2pval(obs_nri, synth_nri, feat_idvals=feat_idvals)
+		
+		return(list(pval=pval, obs_nri=obs_nri, synth_nri=synth_nri,
+		            synth_likert=synth_likert))
+		
 	})
-	return(pval)
+
+	pvals <- sapply(permlist, "[[", i="pval")
+	
+	# For backward compatibility
+	# Otherwise could default to returning the entire list
+	if(details){
+	  obs_nris <- t(sapply(permlist, "[[", i="obs_nri"))
+	  synth_nris <- lapply(permlist, "[[", i="synth_nri")
+	  synth_likert <- lapply(permlist, "[[", i="synth_likert")
+	  return(list(pvals=pvals, obs_nris=obs_nris, synth_nris=synth_nris,
+	              synth_likert=synth_likert))
+	} else {
+	  return(pvals)
+	}
+	
 }
