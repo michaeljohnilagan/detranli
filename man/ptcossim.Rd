@@ -4,18 +4,27 @@
 \alias{ptcossim}
 \title{Person-total cosine similarity}
 \usage{
-ptcossim(x, ref)
+ptcossim(x, ref, mu = NULL)
 }
 \arguments{
 \item{x}{data (matrix or dataframe) of interest.}
 
 \item{ref}{reference sample (matrix or dataframe). Must have same number of columns as \code{x}.}
+
+\item{mu}{(Optional) Vector of means that could be used instead of the reference sample.}
 }
 \value{
 Vector of person-total cosine similarities.
 }
 \description{
 Calculates the person-total cosine similarity with respect to some reference sample.
+}
+\details{
+Computes person-total cosine similarity for each row in \code{x} based on either the
+references sample in \code{ref} or the means in \code{mu}. Lower values are
+typically thought to be indicative of careless responders. A perfect +1
+value indicates the ideal point. Although the ideal point is the same as
+person-total correlations, the metric for this index is not the same.
 }
 \examples{
 x = cnrexample1[1:10,]

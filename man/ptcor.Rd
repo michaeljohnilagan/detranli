@@ -4,18 +4,26 @@
 \alias{ptcor}
 \title{Person-total correlation}
 \usage{
-ptcor(x, ref)
+ptcor(x, ref, mu = NULL)
 }
 \arguments{
 \item{x}{data (matrix or dataframe) of interest.}
 
 \item{ref}{reference sample (matrix or dataframe). Must have same number of columns as \code{x}.}
+
+\item{mu}{(Optional) Vector of means that could be used instead of the reference sample.}
 }
 \value{
 Vector of person-total correlations. Undefined values default to -1.
 }
 \description{
 Calculates the person-total correlation with respect to some reference sample.
+}
+\details{
+Computes person-total correlation for each row in \code{x} based on either the
+references sample in \code{ref} or the means in \code{mu}. Lower values are
+typically thought to be indicative of careless responders. A perfect +1
+value indicates the ideal point.
 }
 \examples{
 x = cnrexample1[1:10,]
