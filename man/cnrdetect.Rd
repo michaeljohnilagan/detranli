@@ -8,9 +8,10 @@ cnrdetect(
   data,
   pointscales,
   numperms = 1000,
-  feat_funs = c(mahal, ptcossim),
+  feat_funs = c("mahal", "ptcossim"),
   feat_idvals = c(0, +1),
-  details = FALSE
+  details = FALSE,
+  custom_funs = NULL
 )
 }
 \arguments{
@@ -22,16 +23,19 @@ Length must match the number of columns in \code{data}.}
 
 \item{numperms}{an integer indicating how many permutations to produce per respondent.}
 
-\item{feat_funs}{list of nonresponsivity feature functions. Each function must 
+\item{feat_funs}{vector of nonresponsivity feature function names. Each function must 
 return a numeric vector. Defaults to Mahalanobis distance and person-total
-cosine similarity.}
+cosine similarity. See Details.}
 
 \item{feat_idvals}{vector of ideal values, in the same order as \code{feat_funs}.
-Defaults to 0 and +1 as the ideal points for Mahalanobis stiance and person-total
+Defaults to 0 and +1 as the ideal points for Mahalanobis distance and person-total
 cosine similarity.}
 
 \item{details}{If \code{FALSE} (the default), returns only p-values. If
 \code{TRUE}, returns additional information in a list.}
+
+\item{custom_funs}{(Optional) named list containing name-function pairs for
+user-defined feature functions. See Details.}
 }
 \value{
 Output depends on the value of \code{details}. If \code{FALSE}, a
@@ -82,9 +86,21 @@ responses in that row. The selected nonresponsitivity indices (\code{feat_funs})
 for each row and its synthetic bots are computed using leave-one-out calculations
 with the remainder of the observed data as a reference sample; the distance of
 these indices from their ideal points is computed and collapsed into a
-one-dimensional space using a distance measure (itself resmbling Mahalanobis
+one-dimensional space using a distance measure (itself resembling Mahalanobis
 distance). p-values are then the lower probability of the observed
 response versus those of its synthetic bots in this one-dimensional space.
+
+Note that \code{feat_funs} will look at the names in \code{custom_funs}, if
+defined, for nonresponsitivity index functions prior to looking in the package
+namespace.
+  
+Custom-defined feature functions (or nonresponsitivity indices) are possible
+by passing a named list to \code{custom_funs}.  Function signatures for each
+function should be \code{function(x, ref)} where \code{x} is a vector or data
+frame of observations whose features we seek and \code{ref} is a data frame
+to use for the reference sample, if required. For instance, \code{ref} would
+contain a reference sample used to compute column means of some items with those
+means later used in the calculation of person-total correlation.
 }
 \examples{
 set.seed(47)

@@ -23,15 +23,17 @@
 #' @param pointscales vector of integers indicating how many Likert-type response 
 #' categories there are for each item. 
 #' Length must match the number of columns in \code{data}.
-#' @param feat_funs list of nonresponsivity feature functions. Each function must 
+#' @param feat_funs vector of nonresponsivity feature function names. Each function must 
 #' return a numeric vector. Defaults to Mahalanobis distance and person-total
-#' cosine similarity.
+#' cosine similarity. See Details.
 #' @param feat_idvals vector of ideal values, in the same order as \code{feat_funs}.
-#' Defaults to 0 and +1 as the ideal points for Mahalanobis stiance and person-total
+#' Defaults to 0 and +1 as the ideal points for Mahalanobis distance and person-total
 #' cosine similarity.
 #' @param numperms an integer indicating how many permutations to produce per respondent.
 #' @param details If \code{FALSE} (the default), returns only p-values. If
 #' \code{TRUE}, returns additional information in a list.
+#' @param custom_funs (Optional) named list containing name-function pairs for
+#' user-defined feature functions. See Details.
 #' 
 #' @details
 #' Performs the permutation test in Ilagan and Falk (2023) for detecting survey
@@ -42,9 +44,21 @@
 #' for each row and its synthetic bots are computed using leave-one-out calculations
 #' with the remainder of the observed data as a reference sample; the distance of
 #' these indices from their ideal points is computed and collapsed into a
-#' one-dimensional space using a distance measure (itself resmbling Mahalanobis
+#' one-dimensional space using a distance measure (itself resembling Mahalanobis
 #' distance). p-values are then the lower probability of the observed
 #' response versus those of its synthetic bots in this one-dimensional space.
+#' 
+#' Note that \code{feat_funs} will look at the names in \code{custom_funs}, if
+#' defined, for nonresponsitivity index functions prior to looking in the package
+#' namespace.
+#'   
+#' Custom-defined feature functions (or nonresponsitivity indices) are possible
+#' by passing a named list to \code{custom_funs}.  Function signatures for each
+#' function should be \code{function(x, ref)} where \code{x} is a vector or data
+#' frame of observations whose features we seek and \code{ref} is a data frame
+#' to use for the reference sample, if required. For instance, \code{ref} would
+#' contain a reference sample used to compute column means of some items with those
+#' means later used in the calculation of person-total correlation.
 #' 
 #' @return Output depends on the value of \code{details}. If \code{FALSE}, a
 #' vector of p-values. Smaller p-values are less suspicious. If not \code{TRUE},
@@ -111,14 +125,26 @@
 #' 
 #' 
 cnrdetect = function(data, pointscales, numperms=1e3,
-feat_funs=c(mahal, ptcossim), feat_idvals=c(0, +1),
-details=FALSE) {
+feat_funs=c("mahal", "ptcossim"), feat_idvals=c(0, +1),
+details=FALSE, custom_funs=NULL) {
+  
 	# assert
 	stopifnot(ncol(data)==length(pointscales))
 	stopifnot(length(feat_funs)==length(feat_idvals))
+	if(!is.null(custom_funs)){stopifnot(is.list(custom_funs))}
+	
 	# combine features into one function
 	feats_combo = function(x, ref) {
 		sapply(feat_funs, function(f) {
+		  if(!is.null(custom_funs)){
+		    if(f %in% names(custom_funs)){
+		      f <- custom_funs[[f]]
+		    } else {
+		      f <- get(f)
+		    }
+		  } else {
+		    f <- get(f)
+		  }
 			f(x, ref)
 		})
 	}
@@ -146,8 +172,8 @@ details=FALSE) {
 		# p values
 		pval <- feat2pval(obs_nri, synth_nri, feat_idvals=feat_idvals)
 		
-		return(list(pval=pval, obs_nri=obs_nri, synth_nri=synth_nri,
-		            synth_likert=synth_likert))
+		return(list(pval=pval, obs_nri=setNames(obs_nri, feat_funs), synth_nri=synth_nri[-1,],
+		            synth_likert=synth_likert[-1,]))
 		
 	})
 
