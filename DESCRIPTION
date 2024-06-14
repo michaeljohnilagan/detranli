@@ -1,12 +1,12 @@
-Package: carelessnpus
+Package: detranli
 Version: 0.2
-Date: 2024-06-06
-Title: Careless Responding Detection, Nonparametric and Unsupervised
+Date: 2024-06-14
+Title: DEtection of RANdom LIkert-type responses
 Description: Detects full (i.e. all items) content-nonresponsivity in Likert-type data, using the nonparametric unsupervised algorithm in Ilagan & Falk (2023) <doi:10.3758/s13428-023-02246-7>. The algorithm has been extended to accommodate inventories whose items vary the number of response options.
 Author: Michael John Ilagan <michael.ilagan@mail.mcgill.ca> and Carl F. Falk <carl.falk@mcgill.ca>
 Maintainer: Michael John Ilagan <michael.ilagan@mail.mcgill.ca>
 License: BSD_3_clause + file LICENSE
-URL: https://github.com/michaeljohnilagan/carelessnpus
+URL: https://github.com/michaeljohnilagan/detranli
 Encoding: UTF-8
 RoxygenNote: 7.3.1
 Depends: 
