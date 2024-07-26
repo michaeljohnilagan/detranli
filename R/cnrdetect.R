@@ -155,7 +155,8 @@ details=FALSE, custom_funs=NULL) {
 		# consider only nonmissing
 		idx_nonmiss = which(!is.na(data[i,]))
 		if(length(idx_nonmiss)<=1) {
-			return(NA)
+			return(list(pval=NA, obs_nri=NULL, synth_nri=NULL, 
+			synth_likert=NULL))
 		} # emergency exit: no more than one item nonmissing
 		# likert space
 		obs_likert = unname(data[i,idx_nonmiss])
@@ -172,8 +173,8 @@ details=FALSE, custom_funs=NULL) {
 		# p values
 		pval <- feat2pval(obs_nri, synth_nri, feat_idvals=feat_idvals)
 		
-		return(list(pval=pval, obs_nri=setNames(obs_nri, feat_funs), synth_nri=synth_nri[-1,],
-		            synth_likert=synth_likert[-1,]))
+		return(list(pval=pval, obs_nri=setNames(obs_nri, feat_funs), 
+		synth_nri=synth_nri[-1,], synth_likert=synth_likert[-1,]))
 		
 	})
 
