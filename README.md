@@ -28,3 +28,9 @@ pvals = cnrdetect(cnrexample1, pointscales=rep(5, 18))
 decisions = ifelse(pvals<0.05, "human", "bot")
 head(data.frame(pval=pvals, decision=decisions))
 ```
+
+## Training materials
+
+This package was presented at a training workshop at the 2024 Annual National Convention of the Canadian Psychological Association (CPA).
+The training materials are available online at OSF.  
+[https://osf.io/vnuew](https://osf.io/vnuew)
