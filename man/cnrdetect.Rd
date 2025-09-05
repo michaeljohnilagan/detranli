@@ -11,7 +11,14 @@ cnrdetect(
   feat_funs = c("mahal", "ptcossim"),
   feat_idvals = c(0, +1),
   details = FALSE,
-  custom_funs = NULL
+  custom_funs = NULL,
+  missingmethod = c("pointscalemidrange", "EM"),
+  synthtype = c("perm", "markovchain", "homarkovchain"),
+  mcorder = 2,
+  highestprob = FALSE,
+  parallel_type = c("lapply", "parallel", "furrr"),
+  ncores = NULL,
+  seed = NULL
 )
 }
 \arguments{
@@ -36,6 +43,30 @@ cosine similarity.}
 
 \item{custom_funs}{(Optional) named list containing name-function pairs for
 user-defined feature functions. See Details.}
+
+\item{missingmethod}{Method for handling missing data. See Details. Options are \code{"pointscalemidrange"} or \code{"EM"}.}
+
+\item{mcorder}{Positive integer that refers to the order of the markov chain or
+"n" for the n-gram approach.}
+
+\item{highestprob}{When \code{"homarkovchain"} is chosen, whether to simulate
+using the next category that has the highest probability (\code{TRUE}) or
+sample based on the available probabilities (\code{FALSE}).}
+
+\item{parallel_type}{(Experimental) If desired, the method of parallel processing. Each row's test
+can be executed on a separate processing core. Options are \code{"lapply"} (default, no parallelization),
+\code{"parallel"} (uses parallel package), \code{"furrr"} (uses furrr package). The latter two may
+speed up computations considerably provided the computer has more than a couple processing cores to use.}
+
+\item{ncores}{(Experimental/Optional) Number of processing cores to use if doing parallel processing.}
+
+\item{seed}{(Optional) A random number seed, if you want the function to set the seed. Defaults to \code{NULL}.}
+
+\item{type}{Create synthetic data by doing permutations (\code{"perm"}),
+from a first-order Markov Chain (\code{"markovchain"}) with the same
+transition probabilities as the row, or from a higher-order markov
+chain (\code{"homarkovchain"}), or by considering possible n-grams of
+response combinations (\code{"ngram"}). Defaults to permutations.}
 }
 \value{
 Output depends on the value of \code{details}. If \code{FALSE}, a
@@ -95,26 +126,46 @@ defined, for nonresponsitivity index functions prior to looking in the package
 namespace.
   
 Custom-defined feature functions (or nonresponsitivity indices) are possible
-by passing a named list to \code{custom_funs}.  Function signatures for each
-function should be \code{function(x, ref)} where \code{x} is a vector or data
-frame of observations whose features we seek and \code{ref} is a data frame
-to use for the reference sample, if required. For instance, \code{ref} would
-contain a reference sample used to compute column means of some items with those
-means later used in the calculation of person-total correlation.
+by passing a named list to \code{custom_funs}. Function signatures for each
+function should be \code{function(x, ref, ..., missargs)} where \code{x} is a
+vector or data frame of observations whose features we seek, \code{ref} is a
+data frame to use for the reference sample, if required, \code{...} is not
+used internally but the custom function may have other options (e.g., see
+\code{\link{mahal}}), and \code{missargs} accepts a list of possible missing
+data handling options for the reference sample (see later). For instance,
+\code{ref} would contain a reference sample used to compute column means of
+some items with those means later used in the calculation of person-total
+correlation.
+
+For handling missing data, only observations that each row actually completes
+will be used in their permutation test. However, other rows in the reference
+sample may have missing data, which complicates computation of means and 
+covariances for feature functions such as Mahalanobis distance, person-total
+correlation, and person-total cosine similarity. The default currently uses
+\code{"pointscalemidrange"}, which is essentially middle value imputation.
+Not great, but what Dupuis et al (2018) used and found to do well enough in
+establishing utility of such indices. \code{"EM"} is experimental and uses
+the EM algorithm to obtain a saturated mean and covariance matrix, assuming
+multivariate normal data from the reference sample. This option is passed 
+down to feature functions, which have been written to implement this option.
+Custom defined feature functions will not implement this approach unless told
+to do so, though the exact way to do this is not yet documented. See
+\code{\link{mahal}} for an example. Either way the test may not work well for
+rows with high rates of missing data.
 }
 \examples{
 set.seed(47)
 
 # p values
 pvals = cnrdetect(cnrexample1, pointscales=rep(5, times=ncol(cnrexample1)), 
-numperms=1000) 
+  numperms=1000) 
 
 # If wishing to do classification with, 95\% sensitivity
 flags = ifelse(pvals < .05, "human", "bot")
 
 # Obtain more than just p-values
 permresults = cnrdetect(cnrexample1, pointscales=rep(5, times=ncol(cnrexample1)), 
-numperms=1000, details=TRUE)
+  numperms=1000, details=TRUE)
 
 # again, generate flags
 flags = ifelse(permresults$pvals < .05, "human", "bot")
@@ -141,9 +192,18 @@ idx = idx[length(idx)]
 plot(permresults$synth_nris[[idx]], xlab="MD", ylab="ptcossim",
      xlim=c(3.5,5.5), ylim=c(.85,.95))
 
-# add point for this probable human:
+# add point for this probable bot:
 points(x=permresults$obs_nris[idx,1], y=permresults$obs_nris[idx,2], col="red",
   pch=19)
 
 
+# Parallel processing examples
+
+# Using parallel package, 2 cores:
+pvals = cnrdetect(cnrexample1, pointscales=rep(5, times=ncol(cnrexample1)), 
+   numperms=1000, parallel_type="parallel", ncores = 2, seed=1234)
+
+# Using furrr package, 2 cores:
+pvals = cnrdetect(cnrexample1, pointscales=rep(5, times=ncol(cnrexample1)), 
+   numperms=1000, parallel_type="furrr", ncores = 2, seed=1234)
 }

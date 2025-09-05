@@ -11,7 +11,8 @@
 #' 
 #' @return The sample matrix.
 #' 
-#' @seealso \code{\link{sample}}, \code{\link{rcnrbinom}}
+#' @seealso \code{\link{sample}}, \code{\link{rcnrbinom}}, \code{\link{rcnrpat}},
+#'  \code{\link{rcnrreverse}}, \code{\link{rcnrstring}}
 #' 
 #' @export
 #' 

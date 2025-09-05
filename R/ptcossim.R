@@ -13,15 +13,37 @@
 #' 
 #' @return Vector of person-total cosine similarities.
 #' 
+#' @importFrom EMgaussian em.cov 
 #' @export
 #'
 #' @examples
 #' x = cnrexample1[1:10,]
 #' anchor = cnrexample1[-(1:10),]
 #' ptcossim(x, anchor) # cosine similarity of x wrt to anchor
-ptcossim = function(x, ref, mu=NULL) {
-	# get anchor parameters
-  if(is.null(mu)){mu = colMeans(ref)}
+ptcossim = function(x, ref, mu=NULL, missargs=NULL) {
+  
+  # missing data handling
+  if(is.null(mu)&!is.null(missargs)){
+    if(missargs$missingmethod=="EM"){
+      anchors = em.cov(ref, max.iter=1000, tol=1e-04, start="diag")
+      if(!anchors$conv){warning("EM algorithm for mahal missing data may not have converged")}
+    } else if (missargs$missingmethod=="pointscalemidrange") {
+      # do nothing
+    } else {
+      stop("Unknown missing data handling method")
+    }
+  }
+  # get anchor parameters
+  if(is.null(mu)){
+    if(is.null(missargs)){
+      mu = colMeans(ref)
+    } else if (missargs$missingmethod=="pointscalemidrange") {
+      mu = colMeans(ref)
+    } else if (missargs$missingmethod=="EM"){
+      mu = anchors$mu[missargs$idx_nonmiss]      
+    }
+  }
+
 	# compute statistic
 	ptc = apply(x, 1, function(v) {
 		nume = sum(v*mu)

@@ -1,14 +1,32 @@
 Package: detranli
-Version: 0.3
-Date: 2024-06-14
+Version: 0.4
+Date: 2025-07-23
 Title: DEtection of RANdom LIkert-type responses
 Description: Detects full (i.e. all items) content-nonresponsivity in Likert-type data, using the nonparametric unsupervised algorithm in Ilagan & Falk (2023) <doi:10.3758/s13428-023-02246-7>. The algorithm has been extended to accommodate inventories whose items vary the number of response options.
-Author: Michael John Ilagan <michael.ilagan@mail.mcgill.ca> and Carl F. Falk <carl.falk@mcgill.ca>
+Authors@R: 
+  c(person(given = c("Michael","John"),
+           family = "Ilagan",
+           role = c("cre","aut"),
+           email = "michael.ilagan@mail.mcgill.ca"),
+    person(given = c("Carl","F."),
+           family = "Falk",
+           role = "aut",
+           email = "carl.falk@mcgill.ca"))
 Maintainer: Michael John Ilagan <michael.ilagan@mail.mcgill.ca>
 License: BSD_3_clause + file LICENSE
 URL: https://github.com/michaeljohnilagan/detranli
 Encoding: UTF-8
 RoxygenNote: 7.3.2
+Imports:
+    furrr,
+    future,
+    parallel,
+    parallelly,
+    EMgaussian
+Suggests:
+    EFA.dimensions,
+    psych,
+    mirt
 Depends: 
     R (>= 2.10)
 LazyData: true

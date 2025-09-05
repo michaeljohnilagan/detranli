@@ -26,5 +26,6 @@ set.seed(47)
 rcnrunif(30, c(4, 4, 4, 5, 5, 5, 6, 6, 6)) # 30 participants, 9 items
 }
 \seealso{
-\code{\link{sample}}, \code{\link{rcnrbinom}}
+\code{\link{sample}}, \code{\link{rcnrbinom}}, \code{\link{rcnrpat}},
+ \code{\link{rcnrreverse}}, \code{\link{rcnrstring}}
 }

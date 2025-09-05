@@ -4,7 +4,7 @@
 \alias{ptcossim}
 \title{Person-total cosine similarity}
 \usage{
-ptcossim(x, ref, mu = NULL)
+ptcossim(x, ref, mu = NULL, missargs = NULL)
 }
 \arguments{
 \item{x}{data (matrix or dataframe) of interest.}
@@ -12,6 +12,11 @@ ptcossim(x, ref, mu = NULL)
 \item{ref}{reference sample (matrix or dataframe). Must have same number of columns as \code{x}.}
 
 \item{mu}{(Optional) Vector of means that could be used instead of the reference sample.}
+
+\item{missargs}{(Experimental/Optional) A list of arguments for handling missing data. Currently
+a list of two elements \code{missingmethod} and \code{idx_nonmiss} are accepted. Details will
+later document how these work. This part is likely to change and only handles missing
+values in the reference sample.}
 }
 \value{
 Vector of person-total cosine similarities.

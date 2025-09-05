@@ -4,7 +4,7 @@
 \alias{mahal}
 \title{Mahalanobis distance}
 \usage{
-mahal(x, ref, mu = NULL, sig = NULL)
+mahal(x, ref, mu = NULL, sig = NULL, missargs = NULL)
 }
 \arguments{
 \item{x}{data (matrix or dataframe) of interest.}
@@ -14,6 +14,11 @@ mahal(x, ref, mu = NULL, sig = NULL)
 \item{mu}{(Optional) Vector of means that could be used instead of the reference sample.}
 
 \item{sig}{(Optional) Covariance matrix that could be used instead of the reference sample.}
+
+\item{missargs}{(Experimental/Optional) A list of arguments for handling missing data. Currently
+a list of two elements \code{missingmethod} and \code{idx_nonmiss} are accepted. Details will
+later document how these work. This part is likely to change and only handles missing
+values in the reference sample.}
 }
 \value{
 Vector of Mahalanobis distances.
