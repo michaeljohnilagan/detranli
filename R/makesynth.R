@@ -24,6 +24,7 @@
 #' 
 #' @return The empirical null distribution, a matrix where the first row is the observed response vector.
 #' 
+#' @importFrom methods new
 #' @import markovchain
 #' @import ngram
 #' @noRd

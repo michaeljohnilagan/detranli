@@ -59,15 +59,15 @@ data(data_RSE)
 # fit a mirt model to some data, theoretically unidimensional
 # and with some reverse-worded items
 library(mirt)
-fit <- mirt(data_RSE, 1, "graded")
-dat <- simdata(model=fit, N=10)
+fit <- mirt(data_RSE, 1, "graded", verbose=FALSE)
+dat <- simdata(model=fit, N=500)
 
 # funny that mirt has negative loadings for positively worded items
 # and vice-versa. Doesn't matter though, leave as-is. Just means
 # latent trait is in opposite direction. Model will still produce
 # probabilities for response patterns similar to that in original data
 
-dat <- dat + 1 # detranli expects indexing to start at 1, mirt starts at 0
+dat <- dat + 1 # detranli expects indexing to start at 1
 
 # which items to sometimes reverse
 whichreverse <- c(3, 5, 8, 9, 10)
@@ -87,11 +87,9 @@ mod <- "F1 = 1-5
        COV = F1*F2*F3*F4*F5
        "
 fit <- mirt(bfi[,1:25], mod, itemtype="graded",
-            method="MHRM", draws=5)
+            method="MHRM", draws=5, verbose=FALSE)
 
-dat <- simdata(model=fit, N=10)
-
-dat <- dat + 1 # detranli expects indexing to start at 1, mirt starts at 0
+dat <- simdata(model=fit, N=500)
 
 # which items to sometimes reverse;
 # guessing here based on inspecting coefficients from fitted model

@@ -35,7 +35,7 @@
 #' @param custom_funs (Optional) named list containing name-function pairs for
 #' user-defined feature functions. See Details.
 #' @param missingmethod Method for handling missing data. See Details. Options are \code{"pointscalemidrange"} or \code{"EM"}. 
-#' @param type Create synthetic data by doing permutations (\code{"perm"}),
+#' @param synthtype Create synthetic data by doing permutations (\code{"perm"}),
 #' from a first-order Markov Chain (\code{"markovchain"}) with the same
 #' transition probabilities as the row, or from a higher-order markov
 #' chain (\code{"homarkovchain"}), or by considering possible n-grams of
@@ -187,6 +187,7 @@ parallel_type=c("lapply","parallel","furrr"), ncores=NULL, seed=NULL) {
 	if(!is.null(custom_funs)){stopifnot(is.list(custom_funs))}
 	parallel_type=match.arg(parallel_type)
 	missingmethod=match.arg(missingmethod)
+	synthtype=match.arg(synthtype)
 	
 	# Check data vs pointscales
 	# Currently assumes coding 1,2,... with NAs allowed

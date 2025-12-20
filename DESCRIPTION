@@ -1,6 +1,6 @@
 Package: detranli
-Version: 0.4
-Date: 2025-07-23
+Version: 0.4.1
+Date: 2025-11-13
 Title: DEtection of RANdom LIkert-type responses
 Description: Detects full (i.e. all items) content-nonresponsivity in Likert-type data, using the nonparametric unsupervised algorithm in Ilagan & Falk (2023) <doi:10.3758/s13428-023-02246-7>. The algorithm has been extended to accommodate inventories whose items vary the number of response options.
 Authors@R: 
@@ -22,7 +22,10 @@ Imports:
     future,
     parallel,
     parallelly,
-    EMgaussian
+    EMgaussian,
+    markovchain,
+    ngram,
+    methods
 Suggests:
     EFA.dimensions,
     psych,

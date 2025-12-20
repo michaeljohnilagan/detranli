@@ -46,6 +46,12 @@ user-defined feature functions. See Details.}
 
 \item{missingmethod}{Method for handling missing data. See Details. Options are \code{"pointscalemidrange"} or \code{"EM"}.}
 
+\item{synthtype}{Create synthetic data by doing permutations (\code{"perm"}),
+from a first-order Markov Chain (\code{"markovchain"}) with the same
+transition probabilities as the row, or from a higher-order markov
+chain (\code{"homarkovchain"}), or by considering possible n-grams of
+response combinations (\code{"ngram"}). Defaults to permutations.}
+
 \item{mcorder}{Positive integer that refers to the order of the markov chain or
 "n" for the n-gram approach.}
 
@@ -61,12 +67,6 @@ speed up computations considerably provided the computer has more than a couple 
 \item{ncores}{(Experimental/Optional) Number of processing cores to use if doing parallel processing.}
 
 \item{seed}{(Optional) A random number seed, if you want the function to set the seed. Defaults to \code{NULL}.}
-
-\item{type}{Create synthetic data by doing permutations (\code{"perm"}),
-from a first-order Markov Chain (\code{"markovchain"}) with the same
-transition probabilities as the row, or from a higher-order markov
-chain (\code{"homarkovchain"}), or by considering possible n-grams of
-response combinations (\code{"ngram"}). Defaults to permutations.}
 }
 \value{
 Output depends on the value of \code{details}. If \code{FALSE}, a
